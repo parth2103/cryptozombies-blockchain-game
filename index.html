@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoZombies DApp - Professional Interface</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+    <script src="cryptozombies_abi.js"></script>
+    <script src="zombie-visual.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">CryptoZombies</a>
+            <div class="wallet-info">
+                <div class="network-status" id="networkStatus">
+                    <span id="networkName">Not Connected</span>
+                </div>
+                <div class="account-info" id="accountInfo" style="display: none;">
+                    <span id="accountAddress">No Account</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>CryptoZombies</h1>
+            <p>Collect, battle, and evolve your zombie army in the ultimate blockchain-based NFT game. Create unique zombies with DNA-based traits and dominate the apocalypse!</p>
+            <button class="btn" id="connectWalletBtn" onclick="connectWallet()">
+                Connect Wallet
+            </button>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Control Panel -->
+        <section class="control-panel">
+            <h2>Zombie Command Center</h2>
+            
+            <!-- Action Grid -->
+            <div class="action-grid">
+                <button class="btn" id="createZombieBtn" onclick="showCreateZombieModal()" disabled>
+                    Create Zombie
+                </button>
+                <button class="btn btn-secondary" id="showZombiesBtn" onclick="showMyZombies()" disabled>
+                    Show My Zombies
+                </button>
+                <button class="btn btn-warning" id="feedKittyBtn" onclick="showFeedKittyModal()" disabled>
+                    Feed on Kitty
+                </button>
+                <button class="btn btn-danger" id="attackBtn" onclick="showAttackModal()" disabled>
+                    Attack Zombie
+                </button>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="txStatus" class="status-success">
+                Ready to create your zombie army! Connect your wallet to begin.
+            </div>
+        </section>
+
+        <!-- Zombie Gallery -->
+        <section class="zombie-gallery">
+            <h2>Your Zombie Army</h2>
+            <div id="zombieStats" class="text-center mb-3" style="display: none;">
+                <p>Total Zombies: <span id="zombieCount">0</span></p>
+            </div>
+            <div id="zombies" class="zombies-grid">
+                <!-- Zombies will be populated here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    
+    <!-- Create Zombie Modal -->
+    <div id="createZombieModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Your First Zombie</h3>
+                <span class="close" onclick="closeModal('createZombieModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="zombieName">Zombie Name</label>
+                <input type="text" class="form-input" id="zombieName" placeholder="Enter zombie name..." maxlength="20">
+            </div>
+            <div class="form-group">
+                <button class="btn" onclick="createZombie()" id="createZombieConfirmBtn">
+                    Create Zombie
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('createZombieModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feed on Kitty Modal -->
+    <div id="feedKittyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Feed on CryptoKitty</h3>
+                <span class="close" onclick="closeModal('feedKittyModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="zombieSelect">Select Your Zombie</label>
+                <select class="form-input" id="zombieSelect">
+                    <option value="">Choose a zombie...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="kittyId">CryptoKitty ID</label>
+                <input type="number" class="form-input" id="kittyId" placeholder="Enter kitty ID..." min="1">
+            </div>
+            <div class="form-group">
+                <button class="btn" onclick="feedOnKitty()" id="feedKittyConfirmBtn">
+                    Feed on Kitty
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('feedKittyModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attack Modal -->
+    <div id="attackModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Attack Another Zombie</h3>
+                <span class="close" onclick="closeModal('attackModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="attackerZombie">Your Attacking Zombie</label>
+                <select class="form-input" id="attackerZombie">
+                    <option value="">Choose attacker...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="targetZombie">Target Zombie ID</label>
+                <input type="number" class="form-input" id="targetZombie" placeholder="Enter target zombie ID..." min="0">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-danger" onclick="attackZombie()" id="attackConfirmBtn">
+                    Attack!
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('attackModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transferModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Transfer Zombie</h3>
+                <span class="close" onclick="closeModal('transferModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="transferZombie">Zombie to Transfer</label>
+                <select class="form-input" id="transferZombie">
+                    <option value="">Choose zombie...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="transferAddress">Recipient Address</label>
+                <input type="text" class="form-input" id="transferAddress" placeholder="0x..." maxlength="42">
+            </div>
+            <div class="form-group">
+                <button class="btn" onclick="transferZombie()" id="transferConfirmBtn">
+                    Transfer
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('transferModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Name Modal -->
+    <div id="changeNameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Change Zombie Name</h3>
+                <span class="close" onclick="closeModal('changeNameModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="renameZombie">Select Zombie</label>
+                <select class="form-input" id="renameZombie">
+                    <option value="">Choose zombie...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="newZombieName">New Name</label>
+                <input type="text" class="form-input" id="newZombieName" placeholder="Enter new name..." maxlength="20">
+            </div>
+            <div class="form-group">
+                <button class="btn" onclick="changeZombieName()" id="changeNameConfirmBtn">
+                    Change Name
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('changeNameModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>CryptoZombies DApp - CPSC 559 Advanced Blockchain Technologies</p>
+            <p>Student: Parth Gohil (CWID: 871916672) | Email: pkg@csu.fullerton.edu</p>
+            <p>Built with Ethereum, Solidity, Web3.js, and Truffle Framework</p>
+        </div>
+    </footer>
+
+    <!-- Load Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
