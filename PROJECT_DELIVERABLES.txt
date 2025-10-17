@@ -147,8 +147,7 @@ SETUP AND RUN INSTRUCTIONS:
 ================================================================================
 
 GITHUB REPOSITORY:
-https://github.com/[YOUR-USERNAME]/cryptozombies-blockchain-game
-(Replace [YOUR-USERNAME] with your actual GitHub username)
+https://github.com/parth2103/cryptozombies-blockchain-game
 
 Repository includes:
 - Complete source code with all improvements
