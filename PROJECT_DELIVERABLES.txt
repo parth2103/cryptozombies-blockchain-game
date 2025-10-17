@@ -147,7 +147,8 @@ SETUP AND RUN INSTRUCTIONS:
 ================================================================================
 
 GITHUB REPOSITORY:
-https://github.com/[your-username]/cryptozombies-dapp
+https://github.com/[YOUR-USERNAME]/cryptozombies-blockchain-game
+(Replace [YOUR-USERNAME] with your actual GitHub username)
 
 Repository includes:
 - Complete source code with all improvements

@@ -10,8 +10,8 @@ class CryptoZombiesApp {
         this.zombieVisual = new ZombieVisual();
         this.isConnected = false;
         
-        // Contract address - will be updated after deployment
-        this.contractAddress = "0xC934e804e4Bb09960AD3dE5c959997Ff82f038Ed";
+        // Contract address - updated after latest deployment
+        this.contractAddress = "0x692605bEC793C5b06F5B1819acAdB460ec12AC08";
         
         this.init();
     }
@@ -23,6 +23,21 @@ class CryptoZombiesApp {
         await this.setupWeb3();
         this.setupEventListeners();
         this.updateUI();
+        // Auto-refresh disabled - user can manually refresh using the refresh button
+        // this.startCooldownTimer();
+    }
+
+    /**
+     * Start cooldown timer to update zombie status in real-time
+     * Currently disabled - use manual refresh button instead
+     */
+    startCooldownTimer() {
+        // Update cooldown every 10 seconds
+        setInterval(() => {
+            if (this.isConnected && this.userAccount) {
+                this.loadUserZombies();
+            }
+        }, 10000);
     }
 
     /**
@@ -66,9 +81,14 @@ class CryptoZombiesApp {
         try {
             this.cryptoZombies = new web3.eth.Contract(cryptoZombiesABI, this.contractAddress);
             
+            // Test contract connection
+            console.log('Contract instance created:', this.cryptoZombies);
+            console.log('Contract address:', this.contractAddress);
+            
             // Listen for Transfer events
             this.cryptoZombies.events.Transfer({ filter: { _to: this.userAccount } })
                 .on("data", (event) => {
+                    console.log('Transfer event received:', event);
                     this.showStatus('New zombie received!', 'success');
                     this.loadUserZombies();
                 })
@@ -163,7 +183,10 @@ class CryptoZombiesApp {
             // Enable action buttons
             document.getElementById('createZombieBtn').disabled = false;
             document.getElementById('showZombiesBtn').disabled = false;
+            document.getElementById('levelUpBtn').disabled = false;
             document.getElementById('feedKittyBtn').disabled = false;
+            document.getElementById('transferBtn').disabled = false;
+            document.getElementById('renameBtn').disabled = false;
             document.getElementById('attackBtn').disabled = false;
             
             // Update network status
@@ -180,7 +203,10 @@ class CryptoZombiesApp {
             // Disable action buttons
             document.getElementById('createZombieBtn').disabled = true;
             document.getElementById('showZombiesBtn').disabled = true;
+            document.getElementById('levelUpBtn').disabled = true;
             document.getElementById('feedKittyBtn').disabled = true;
+            document.getElementById('transferBtn').disabled = true;
+            document.getElementById('renameBtn').disabled = true;
             document.getElementById('attackBtn').disabled = true;
         }
     }
@@ -270,19 +296,38 @@ class CryptoZombiesApp {
             return;
         }
 
+        // Check if user already has a zombie
+        try {
+            const existingZombies = await this.cryptoZombies.methods.getZombiesByOwner(this.userAccount).call();
+            if (existingZombies.length > 0) {
+                this.showStatus('You already have a zombie! You can only create one initially.', 'warning');
+                return;
+            }
+        } catch (error) {
+            console.error('Error checking existing zombies:', error);
+        }
+
         try {
             this.showLoading('createZombieConfirmBtn', 'Creating Zombie...');
             this.showStatus('Creating zombie on blockchain...', 'success');
 
+            console.log('Creating zombie with name:', name);
+            console.log('From account:', this.userAccount);
+            console.log('Contract address:', this.contractAddress);
+
             const result = await this.cryptoZombies.methods.createRandomZombie(name)
                 .send({ from: this.userAccount });
+
+            console.log('Zombie creation result:', result);
 
             this.showStatus(`Successfully created ${name}!`, 'success');
             this.closeModal('createZombieModal');
             nameInput.value = '';
             
-            // Reload zombies
-            await this.loadUserZombies();
+            // Reload zombies immediately
+            setTimeout(async () => {
+                await this.loadUserZombies();
+            }, 1000);
             
         } catch (error) {
             console.error('Create zombie error:', error);
@@ -315,10 +360,12 @@ class CryptoZombiesApp {
      * Display zombies in the gallery
      */
     async displayZombies(zombieIds) {
+        console.log('Displaying zombies:', zombieIds);
         const zombiesContainer = document.getElementById('zombies');
         zombiesContainer.innerHTML = '';
 
         if (zombieIds.length === 0) {
+            console.log('No zombies found, showing empty state');
             zombiesContainer.innerHTML = `
                 <div class="text-center" style="grid-column: 1 / -1; padding: 2rem;">
                     <h3>No zombies yet!</h3>
@@ -328,11 +375,15 @@ class CryptoZombiesApp {
             return;
         }
 
+        console.log(`Found ${zombieIds.length} zombies, creating cards...`);
         for (const id of zombieIds) {
             try {
+                console.log(`Loading zombie ${id}...`);
                 const zombie = await this.getZombieDetails(id);
+                console.log(`Zombie ${id} details:`, zombie);
                 const zombieCard = this.createZombieCard(id, zombie);
                 zombiesContainer.appendChild(zombieCard);
+                console.log(`Zombie ${id} card created and added`);
             } catch (error) {
                 console.error(`Error loading zombie ${id}:`, error);
             }
@@ -353,6 +404,12 @@ class CryptoZombiesApp {
         const rarity = this.zombieVisual.getZombieRarity(zombie.dna);
         const isReady = parseInt(zombie.readyTime) <= Math.floor(Date.now() / 1000);
         
+        // Calculate cooldown time remaining
+        const cooldownTime = parseInt(zombie.readyTime) - Math.floor(Date.now() / 1000);
+        const cooldownText = cooldownTime > 0 ? 
+            `Cooldown: ${this.formatTime(cooldownTime)}` : 
+            'Ready for Action!';
+        
         const card = document.createElement('div');
         card.className = 'zombie-card fade-in';
         
@@ -362,7 +419,7 @@ class CryptoZombiesApp {
         card.innerHTML = `
             <div class="zombie-avatar">
                 ${avatarSVG}
-                ${!isReady ? '<div class="cooldown-overlay">Cooldown Active</div>' : ''}
+                ${!isReady ? `<div class="cooldown-overlay">${cooldownText}</div>` : ''}
             </div>
             <ul class="zombie-stats">
                 <li><span class="stat-label">Name:</span> <span class="stat-value">${zombie.name}</span></li>
@@ -371,22 +428,33 @@ class CryptoZombiesApp {
                 <li><span class="stat-label">Wins:</span> <span class="stat-value text-success">${zombie.winCount}</span></li>
                 <li><span class="stat-label">Losses:</span> <span class="stat-value text-error">${zombie.lossCount}</span></li>
                 <li><span class="stat-label">Rarity:</span> <span class="stat-value" style="color: ${rarity.color}">${rarity.rarity}</span></li>
+                <li><span class="stat-label">Status:</span> <span class="stat-value ${isReady ? 'text-success' : 'text-warning'}">${isReady ? 'Ready' : cooldownText}</span></li>
             </ul>
-            <div class="zombie-actions">
-                <button class="btn btn-warning" onclick="app.levelUpZombie(${id})" ${!isReady ? 'disabled' : ''}>
-                    Level Up (0.001 ETH)
-                </button>
-                <button class="btn btn-secondary" onclick="app.showTransferModal(${id})">
-                    Transfer
-                </button>
-                ${parseInt(zombie.level) >= 2 ? 
-                    `<button class="btn btn-secondary" onclick="app.showChangeNameModal(${id})">Rename</button>` : 
-                    ''
-                }
+            <div class="zombie-info">
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem;">
+                    Use the buttons above to interact with this zombie
+                </p>
             </div>
         `;
         
         return card;
+    }
+
+    /**
+     * Format time in seconds to readable format
+     */
+    formatTime(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        
+        if (hours > 0) {
+            return `${hours}h ${minutes}m ${secs}s`;
+        } else if (minutes > 0) {
+            return `${minutes}m ${secs}s`;
+        } else {
+            return `${secs}s`;
+        }
     }
 
     /**
@@ -404,7 +472,7 @@ class CryptoZombiesApp {
      * Populate zombie select dropdowns
      */
     populateZombieSelects(zombieIds) {
-        const selects = ['zombieSelect', 'attackerZombie', 'transferZombie', 'renameZombie'];
+        const selects = ['zombieSelect', 'attackerZombie', 'transferZombie', 'renameZombie', 'levelUpZombie'];
         
         for (const selectId of selects) {
             const select = document.getElementById(selectId);
@@ -632,6 +700,17 @@ class CryptoZombiesApp {
         modal.style.display = 'block';
     }
 
+    showLevelUpModal(zombieId = null) {
+        const modal = document.getElementById('levelUpModal');
+        const select = document.getElementById('levelUpZombie');
+        
+        if (zombieId) {
+            select.value = zombieId;
+        }
+        
+        modal.style.display = 'block';
+    }
+
     closeModal(modalId) {
         document.getElementById(modalId).style.display = 'none';
     }
@@ -641,6 +720,21 @@ class CryptoZombiesApp {
         modals.forEach(modal => {
             modal.style.display = 'none';
         });
+    }
+
+    /**
+     * Level up selected zombie from modal
+     */
+    async levelUpSelectedZombie() {
+        const zombieId = document.getElementById('levelUpZombie').value;
+        
+        if (!zombieId) {
+            this.showStatus('Please select a zombie to level up.', 'warning');
+            return;
+        }
+
+        await this.levelUpZombie(zombieId);
+        this.closeModal('levelUpModal');
     }
 }
 
@@ -682,7 +776,24 @@ function attackZombie() {
 }
 
 function showMyZombies() {
+    console.log('Manual refresh of zombies requested');
     app.loadUserZombies();
+}
+
+function showLevelUpModal() {
+    app.showLevelUpModal();
+}
+
+function showTransferModal() {
+    app.showTransferModal();
+}
+
+function showChangeNameModal() {
+    app.showChangeNameModal();
+}
+
+function levelUpSelectedZombie() {
+    app.levelUpSelectedZombie();
 }
 
 function closeModal(modalId) {

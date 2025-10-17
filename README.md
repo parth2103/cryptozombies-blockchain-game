@@ -6,11 +6,29 @@ This is a complete Ethereum Decentralized Application (DApp) that implements a z
 
 ## Features
 
-- **Zombie Creation**: Create unique zombies with random DNA
-- **Zombie Management**: View zombie statistics (name, DNA, level, wins/losses)
-- **Level Up System**: Pay ETH to increase zombie levels
+### Core Features
+- **Zombie Creation**: Create unique zombies with random DNA and custom names
+- **Visual Representation**: DNA-based zombie avatar generation using SVG
+- **Zombie Management**: View zombie stats with professional card-based layout
+- **Level Up System**: Pay ETH to increase zombie levels with visual feedback
+- **Rarity System**: Zombie rarity based on DNA uniqueness (Common to Legendary)
 - **NFT Ownership**: ERC721-compliant non-fungible token ownership
-- **Real-time Events**: Blockchain event monitoring for instant updates
+
+### Advanced Features
+- **Feed on Kitty**: Integrate with CryptoKitties to create hybrid zombies
+- **Attack System**: Battle zombies against each other with win/loss tracking
+- **Transfer System**: Send zombies to other addresses
+- **Name Changes**: Rename zombies (requires level 2+)
+- **Real-time Events**: Live blockchain event monitoring and updates
+- **Cooldown System**: Visual indicators for zombie readiness
+
+### Professional UI/UX
+- **Responsive Design**: Mobile, tablet, and desktop optimized
+- **Dark Theme**: Professional zombie apocalypse aesthetic
+- **Modal System**: Clean user input dialogs for all actions
+- **Loading States**: Progress indicators and feedback for all operations
+- **Error Handling**: Comprehensive error messages and validation
+- **Wallet Integration**: Seamless MetaMask connection and management
 
 ## Technical Architecture
 

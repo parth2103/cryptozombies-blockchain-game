@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CryptoZombies DApp - Professional Interface</title>
-    <link rel="icon" href="favicon.ico">
+<link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="styles.css">
     
     <!-- External Libraries -->
@@ -48,14 +48,23 @@
             
             <!-- Action Grid -->
             <div class="action-grid">
-                <button class="btn" id="createZombieBtn" onclick="showCreateZombieModal()" disabled>
+                <button class="btn btn-success" id="createZombieBtn" onclick="showCreateZombieModal()" disabled>
                     Create Zombie
                 </button>
                 <button class="btn btn-secondary" id="showZombiesBtn" onclick="showMyZombies()" disabled>
                     Show My Zombies
                 </button>
-                <button class="btn btn-warning" id="feedKittyBtn" onclick="showFeedKittyModal()" disabled>
+                <button class="btn btn-warning" id="levelUpBtn" onclick="showLevelUpModal()" disabled>
+                    Level Up Zombie
+                </button>
+                <button class="btn btn-success" id="feedKittyBtn" onclick="showFeedKittyModal()" disabled>
                     Feed on Kitty
+                </button>
+                <button class="btn btn-secondary" id="transferBtn" onclick="showTransferModal()" disabled>
+                    Transfer Zombie
+                </button>
+                <button class="btn btn-secondary" id="renameBtn" onclick="showChangeNameModal()" disabled>
+                    Change Name
                 </button>
                 <button class="btn btn-danger" id="attackBtn" onclick="showAttackModal()" disabled>
                     Attack Zombie
@@ -70,7 +79,12 @@
 
         <!-- Zombie Gallery -->
         <section class="zombie-gallery">
-            <h2>Your Zombie Army</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>Your Zombie Army</h2>
+                <button class="btn btn-secondary" onclick="app.loadUserZombies()" id="refreshBtn">
+                    🔄 Refresh
+                </button>
+            </div>
             <div id="zombieStats" class="text-center mb-3" style="display: none;">
                 <p>Total Zombies: <span id="zombieCount">0</span></p>
             </div>
@@ -94,7 +108,7 @@
                 <input type="text" class="form-input" id="zombieName" placeholder="Enter zombie name..." maxlength="20">
             </div>
             <div class="form-group">
-                <button class="btn" onclick="createZombie()" id="createZombieConfirmBtn">
+                <button class="btn btn-success" onclick="createZombie()" id="createZombieConfirmBtn">
                     Create Zombie
                 </button>
                 <button class="btn btn-secondary" onclick="closeModal('createZombieModal')">
@@ -122,7 +136,7 @@
                 <input type="number" class="form-input" id="kittyId" placeholder="Enter kitty ID..." min="1">
             </div>
             <div class="form-group">
-                <button class="btn" onclick="feedOnKitty()" id="feedKittyConfirmBtn">
+                <button class="btn btn-success" onclick="feedOnKitty()" id="feedKittyConfirmBtn">
                     Feed on Kitty
                 </button>
                 <button class="btn btn-secondary" onclick="closeModal('feedKittyModal')">
@@ -178,10 +192,39 @@
                 <input type="text" class="form-input" id="transferAddress" placeholder="0x..." maxlength="42">
             </div>
             <div class="form-group">
-                <button class="btn" onclick="transferZombie()" id="transferConfirmBtn">
+                <button class="btn btn-secondary" onclick="transferZombie()" id="transferConfirmBtn">
                     Transfer
                 </button>
                 <button class="btn btn-secondary" onclick="closeModal('transferModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level Up Modal -->
+    <div id="levelUpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Level Up Zombie</h3>
+                <span class="close" onclick="closeModal('levelUpModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="levelUpZombie">Select Zombie to Level Up</label>
+                <select class="form-input" id="levelUpZombie">
+                    <option value="">Choose zombie...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    Cost: 0.001 ETH per level up
+                </p>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-warning" onclick="levelUpSelectedZombie()" id="levelUpConfirmBtn">
+                    Level Up (0.001 ETH)
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('levelUpModal')">
                     Cancel
                 </button>
             </div>
@@ -206,7 +249,7 @@
                 <input type="text" class="form-input" id="newZombieName" placeholder="Enter new name..." maxlength="20">
             </div>
             <div class="form-group">
-                <button class="btn" onclick="changeZombieName()" id="changeNameConfirmBtn">
+                <button class="btn btn-secondary" onclick="changeZombieName()" id="changeNameConfirmBtn">
                     Change Name
                 </button>
                 <button class="btn btn-secondary" onclick="closeModal('changeNameModal')">

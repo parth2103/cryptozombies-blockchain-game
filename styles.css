@@ -156,7 +156,7 @@ h3 {
 
 .action-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -202,14 +202,19 @@ h3 {
 .btn-secondary:hover {
   background: var(--accent-green);
   color: var(--primary-bg);
+  border-color: var(--accent-green);
+}
+
+.btn-success {
+  background: linear-gradient(45deg, var(--success-color), #22c55e);
 }
 
 .btn-danger {
-  background: var(--accent-red);
+  background: linear-gradient(45deg, var(--accent-red), #dc2626);
 }
 
 .btn-warning {
-  background: var(--warning-color);
+  background: linear-gradient(45deg, var(--warning-color), #f59e0b);
 }
 
 /* Status Messages */
@@ -324,16 +329,21 @@ h3 {
 }
 
 .zombie-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  margin-top: 1rem;
 }
 
 .zombie-actions .btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  flex: 1;
-  min-width: 80px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  text-align: center;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Progress Bars */
