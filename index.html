@@ -47,29 +47,46 @@
             <h2>Zombie Command Center</h2>
             
             <!-- Action Grid -->
-            <div class="action-grid">
-                <button class="btn btn-success" id="createZombieBtn" onclick="showCreateZombieModal()" disabled>
-                    Create Zombie
-                </button>
-                <button class="btn btn-secondary" id="showZombiesBtn" onclick="showMyZombies()" disabled>
-                    Show My Zombies
-                </button>
-                <button class="btn btn-warning" id="levelUpBtn" onclick="showLevelUpModal()" disabled>
-                    Level Up Zombie
-                </button>
-                <button class="btn btn-success" id="feedKittyBtn" onclick="showFeedKittyModal()" disabled>
-                    Feed on Kitty
-                </button>
-                <button class="btn btn-secondary" id="transferBtn" onclick="showTransferModal()" disabled>
-                    Transfer Zombie
-                </button>
-                <button class="btn btn-secondary" id="renameBtn" onclick="showChangeNameModal()" disabled>
-                    Change Name
-                </button>
-                <button class="btn btn-danger" id="attackBtn" onclick="showAttackModal()" disabled>
-                    Attack Zombie
-                </button>
+        <div class="action-sections">
+            <div class="action-group">
+                <h3>Primary Actions</h3>
+                <div class="action-buttons">
+                    <button class="btn btn-success" id="createZombieBtn" onclick="showCreateZombieModal()" disabled>
+                        Create Zombie
+                    </button>
+                    <button class="btn btn-success" id="feedKittyBtn" onclick="showFeedKittyModal()" disabled>
+                        Feed on Kitty
+                    </button>
+                </div>
             </div>
+            
+            <div class="action-group">
+                <h3>Upgrade & Management</h3>
+                <div class="action-buttons">
+                    <button class="btn btn-warning" id="levelUpBtn" onclick="showLevelUpModal()" disabled>
+                        Level Up Zombie
+                    </button>
+                    <button class="btn btn-secondary" id="showZombiesBtn" onclick="showMyZombies()" disabled>
+                        Show My Zombies
+                    </button>
+                    <button class="btn btn-secondary" id="transferBtn" onclick="showTransferModal()" disabled>
+                        Transfer Zombie
+                    </button>
+                    <button class="btn btn-secondary" id="renameBtn" onclick="showChangeNameModal()" disabled>
+                        Change Name
+                    </button>
+                </div>
+            </div>
+            
+            <div class="action-group">
+                <h3>Combat</h3>
+                <div class="action-buttons">
+                    <button class="btn btn-danger" id="attackBtn" onclick="showAttackModal()" disabled>
+                        Attack Zombie
+                    </button>
+                </div>
+            </div>
+        </div>
 
             <!-- Status Messages -->
             <div id="txStatus" class="status-success">

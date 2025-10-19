@@ -154,6 +154,86 @@ h3 {
   margin-bottom: 2rem;
 }
 
+/* Action Sections */
+.action-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.action-group {
+  background: var(--card-bg);
+  border: 2px solid var(--accent-green);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.action-group:hover {
+  border-color: var(--warning-color);
+  box-shadow: 0 6px 20px rgba(22, 193, 114, 0.2);
+}
+
+.action-group h3 {
+  color: var(--accent-green);
+  font-family: 'Creepster', cursive;
+  font-size: 1.2rem;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  text-shadow: 0 0 10px var(--accent-green);
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+/* Action Sections */
+.action-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 1.5rem 0;
+}
+
+.action-group {
+  background: var(--card-bg);
+  border: 1px solid var(--accent-green);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.action-group h3 {
+  color: var(--accent-green);
+  font-family: 'Creepster', cursive;
+  font-size: 1.2rem;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  text-shadow: 0 0 10px var(--accent-green);
+  border-bottom: 2px solid var(--accent-green);
+  padding-bottom: 0.5rem;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-buttons .btn {
+  flex: 0 0 auto;
+  min-width: 180px;
+  max-width: 250px;
+  width: auto;
+}
+
+/* Legacy action-grid for backward compatibility */
 .action-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -512,6 +592,25 @@ h3 {
   
   .container {
     padding: 0 1rem;
+  }
+  
+  .action-sections {
+    gap: 1.5rem;
+  }
+  
+  .action-group {
+    padding: 1rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .action-buttons .btn {
+    min-width: auto;
+    max-width: none;
+    width: 100%;
   }
   
   .action-grid {

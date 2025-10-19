@@ -10,8 +10,8 @@ class CryptoZombiesApp {
         this.zombieVisual = new ZombieVisual();
         this.isConnected = false;
         
-        // Contract address - updated after latest deployment
-        this.contractAddress = "0x692605bEC793C5b06F5B1819acAdB460ec12AC08";
+        // Contract address - updated after latest deployment with MockKittyCore
+        this.contractAddress = "0xf3245cbdd5A26c6285902041946Bb9E3EAEd9A5c";
         
         this.init();
     }

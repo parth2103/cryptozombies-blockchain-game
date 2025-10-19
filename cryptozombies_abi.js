@@ -438,5 +438,7 @@ var cryptoZombiesABI = [
       "name": "OwnershipTransferred",
       "type": "event"
     }
-  ]
+  ];
+
+module.exports = { cryptoZombiesABI };
   
